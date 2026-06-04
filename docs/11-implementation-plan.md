@@ -284,3 +284,34 @@ Deploy the private MVP safely.
 - Snapshot entry works in production.
 - Dashboard loads production data correctly.
 - No secrets are exposed in client code or committed files.
+
+## Phase 10: Production Handoff and Operational Readiness
+
+### Goal
+
+Make the deployed MVP easier to operate, verify, and continue improving after launch.
+
+### Tasks
+
+- Confirm the live Vercel production URL is documented.
+- Confirm production Supabase environment variables are documented.
+- Confirm signed-out production route protection works.
+- Record accepted free-plan security limitations.
+- Add a production smoke-test checklist for the first real account.
+- Update project README with app-specific setup, deployment, and verification notes.
+- Update changelog.
+
+### Files Likely Touched
+
+- `README.md`
+- `CHANGELOG.md`
+- `docs/13-phase-8-qa-checklist.md`
+- `docs/14-deployment-notes.md`
+- `docs/15-phase-10-production-handoff.md`
+
+### Completion Criteria
+
+- Production URL and repository URL are documented.
+- Known Supabase free-plan limitation is documented without blocking MVP launch.
+- Post-launch smoke test steps are clear.
+- Local checks pass after documentation updates.

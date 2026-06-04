@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CreatorVault
+
+CreatorVault is a private content portfolio and analytics tracker for a solo creator. It stores YouTube long videos, YouTube Shorts, and Instagram Reels, then lets the creator track metadata, topics, hooks, CTAs, notes, manual stats snapshots, charts, and dashboard summaries.
 
 ## Getting Started
 
-First, run the development server:
+Create a local environment file:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```text
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Install dependencies and run the development server:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open `http://localhost:3000`.
 
-## Learn More
+## Verification
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run check
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Production
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- GitHub: `https://github.com/mahakaal2005/creatorvault`
+- Vercel: `https://creatorvault-eight.vercel.app`
+- Supabase project ref: `lcfczbtdibwtzgirorls`
 
-## Deploy on Vercel
+Production Supabase Auth settings should include:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Site URL: `https://creatorvault-eight.vercel.app`
+- Redirect URL: `https://creatorvault-eight.vercel.app/**`
+- Local redirect URL: `http://localhost:3000/**`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Leaked password protection is accepted as disabled for the free-plan MVP because it is a paid-plan Supabase Auth hardening feature for this project.
+
+## Documentation
+
+The product, technical, testing, security, deployment, and production handoff docs live in `docs/`.

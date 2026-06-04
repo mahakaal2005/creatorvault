@@ -18,7 +18,7 @@
 
 ## Supabase Advisor Review
 
-- Security advisor warning: leaked password protection is disabled in Supabase Auth. Enable before production deployment.
+- Security advisor warning: leaked password protection is disabled in Supabase Auth. This is accepted for the free-plan MVP because the setting is only available on a paid Supabase plan for this project.
 - Performance advisor info: several indexes are currently unused on the fresh database. Keep them for MVP because they support expected future content filtering and snapshot queries.
 
 ## UI Review Checklist
@@ -34,5 +34,5 @@
 ## Known Follow-Up
 
 - Authenticated browser visual QA should be performed before deployment with a real account and seed content.
-- Enable Supabase Auth leaked password protection before production launch.
+- Revisit Supabase Auth leaked password protection before upgrading the project plan or storing higher-risk data.
 - The existing moderate Next/PostCSS audit advisory remains until a non-breaking upstream fix is available.

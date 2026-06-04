@@ -16,3 +16,11 @@
 - Added Phase 7 chart data utilities, content detail performance charts, dashboard platform/topic charts, and sparse chart empty states.
 - Added Phase 8 QA coverage, tag normalization tests, app loading/error states, accessibility landmarks, skip link, content action error handling, and a manual QA checklist.
 - Added Phase 9 deployment notes, Vercel deployment checklist, Supabase production status notes, and tightened MVP environment variable guidance.
+
+## 2026-06-04
+
+- Published CreatorVault to GitHub and Vercel.
+- Configured Vercel production environment variables for the Supabase hosted backend.
+- Verified the production app redirects signed-out dashboard traffic to login.
+- Added Phase 10 production handoff notes.
+- Reclassified Supabase leaked password protection as a paid-plan hardening follow-up accepted for the free-plan MVP.

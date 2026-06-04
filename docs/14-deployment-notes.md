@@ -2,9 +2,12 @@
 
 ## Current Deployment Status
 
-CreatorVault is deployment-ready, but it has not been published to Vercel from this workspace yet.
+CreatorVault is deployed to Vercel and connected to the hosted Supabase production backend.
 
-Reason: Vercel CLI is not installed locally, and no Vercel MCP/tool is available in this session.
+- GitHub repository: `https://github.com/mahakaal2005/creatorvault`
+- Production URL: `https://creatorvault-eight.vercel.app`
+- Latest deployed commit: `4d165ad`
+- Production behavior verified: signed-out `/dashboard` redirects to `/login?next=%2Fdashboard`.
 
 ## Supabase Production Backend
 
@@ -31,11 +34,11 @@ Do not add `SUPABASE_SERVICE_ROLE_KEY` unless a future server-only admin workflo
 
 In Supabase Dashboard > Authentication:
 
-- Set the Site URL to the production Vercel URL after deployment.
+- Set the Site URL to `https://creatorvault-eight.vercel.app`.
 - Add redirect URLs for:
-  - Production: `https://<your-vercel-domain>`
-  - Local development: `http://localhost:3000`
-- Enable leaked password protection if the project plan supports it.
+  - Production: `https://creatorvault-eight.vercel.app/**`
+  - Local development: `http://localhost:3000/**`
+- Enable leaked password protection if the project plan supports it. This is a paid-plan hardening option and is accepted as disabled for the free-plan MVP.
 - Keep email/password auth enabled for the private MVP.
 
 ## Recommended Vercel Deployment Path
@@ -82,6 +85,6 @@ After deployment:
 
 ## Known Deployment Follow-Ups
 
-- Enable Supabase leaked password protection before real production use.
+- Leaked password protection remains disabled because it is only available on a paid Supabase plan for this project. Revisit before storing higher-risk personal data or sharing the app more broadly.
 - The existing moderate Next/PostCSS advisory remains until a non-breaking upstream fix is available.
 - Add YouTube OAuth sync as a later phase, not part of MVP deployment.
