@@ -8,6 +8,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 type StatusResponse = {
   configured: boolean;
   connected: boolean;
+  last_synced_at: string | null;
   account: {
     name: string | null;
     provider_account_id: string | null;
@@ -21,6 +22,7 @@ type SyncSummary = {
   created: number;
   updated: number;
   skipped_existing: number;
+  skipped_missing: number;
   snapshots: number;
 };
 
@@ -47,6 +49,17 @@ function formPayload(form: HTMLFormElement) {
   payload.include_existing = data.get("include_existing") === "on";
 
   return payload;
+}
+
+function formatDateTime(value: string | null | undefined) {
+  if (!value) {
+    return "Never";
+  }
+
+  return new Intl.DateTimeFormat("en", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(value));
 }
 
 export function YouTubeSyncPanel() {
@@ -108,6 +121,7 @@ export function YouTubeSyncPanel() {
     }
 
     setSyncSummary(body.summary);
+    await loadStatus();
     setMessage("YouTube sync finished.");
   }
 
@@ -167,7 +181,7 @@ export function YouTubeSyncPanel() {
             {status && !status.configured
               ? "YouTube sync needs production secrets before it can be connected."
               : status?.connected
-                ? `Connected to ${status.account?.name ?? "YouTube"}.`
+                ? `Connected to ${status.account?.name ?? "YouTube"}. Last synced: ${formatDateTime(status.last_synced_at)}.`
                 : "Connect a YouTube account to import uploaded videos and Shorts."}
           </p>
         </div>
@@ -200,6 +214,15 @@ export function YouTubeSyncPanel() {
         <div className="mt-5 grid gap-5">
           <form className="space-y-4" onSubmit={sync}>
             <div className="grid gap-3 sm:grid-cols-2">
+              <label className="space-y-1.5">
+                <span className={labelClassName}>Sync mode</span>
+                <select className={inputClassName} name="mode" defaultValue="sync_all">
+                  <option value="sync_all">Sync all</option>
+                  <option value="new_uploads">Only new uploads</option>
+                  <option value="refresh_stats">Refresh stats only</option>
+                </select>
+              </label>
+
               <label className="space-y-1.5">
                 <span className={labelClassName}>Import type</span>
                 <select className={inputClassName} name="content_type">
@@ -244,7 +267,8 @@ export function YouTubeSyncPanel() {
               <span>Updated: {syncSummary.updated}</span>
               <span>Imported: {syncSummary.imported}</span>
               <span>Snapshots: {syncSummary.snapshots}</span>
-              <span>Skipped: {syncSummary.skipped_existing}</span>
+              <span>Skipped existing: {syncSummary.skipped_existing}</span>
+              <span>Skipped missing: {syncSummary.skipped_missing}</span>
             </div>
           ) : null}
 
@@ -267,6 +291,15 @@ export function YouTubeSyncPanel() {
                 <input className={inputClassName} name="published_to" type="date" />
               </label>
             </div>
+            <label className="block space-y-1.5">
+              <span className={labelClassName}>Type DELETE IMPORTED to confirm</span>
+              <input
+                className={inputClassName}
+                name="confirmation"
+                placeholder="DELETE IMPORTED"
+                required
+              />
+            </label>
             <Button type="submit" variant="destructive" disabled={pending}>
               <Trash2 className="size-4" aria-hidden="true" />
               Delete imported

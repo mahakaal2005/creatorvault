@@ -101,8 +101,9 @@ After deployment:
 - Confirm `/api/dashboard/summary` returns `401` when signed out.
 - Connect YouTube from `/settings`.
 - Run a default YouTube sync and confirm videos/Shorts appear in `/content`.
+- Run Only new uploads and Refresh stats only from `/settings`.
 - Filter `/content` by Source = YouTube sync.
-- Delete imported YouTube content with a narrow filter and confirm manual content remains.
+- Delete imported YouTube content with a narrow filter and typed confirmation, then confirm manual content remains.
 
 ## Known Deployment Follow-Ups
 

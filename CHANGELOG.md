@@ -28,3 +28,7 @@
 - Added YouTube OAuth connection routes, read-only sync routes, imported-content cleanup, source filtering, and secure server-side token handling.
 - Applied the `youtube_sync_import_tracking` Supabase migration.
 - Applied the `youtube_sync_advisor_cleanup` Supabase migration for explicit platform account deny policies and source account indexing.
+
+## 2026-06-04 Phase 13
+
+- Added YouTube sync polish with sync modes, last synced status, imported-content badges, richer summaries, and typed bulk-delete confirmation.

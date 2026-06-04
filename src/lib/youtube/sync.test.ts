@@ -4,6 +4,7 @@ import {
   buildContentPayload,
   buildSnapshotPayload,
   filterImportedVideos,
+  getSyncAction,
 } from "./sync";
 import type { ImportedYouTubeVideo } from "./api";
 
@@ -96,5 +97,22 @@ describe("sync payload builders", () => {
       likes: 25,
       comments: 5,
     });
+  });
+});
+
+describe("getSyncAction", () => {
+  it("creates missing videos and updates existing videos in sync-all mode", () => {
+    expect(getSyncAction(false, { mode: "sync_all" })).toBe("create");
+    expect(getSyncAction(true, { mode: "sync_all" })).toBe("update");
+  });
+
+  it("only creates missing videos in new-uploads mode", () => {
+    expect(getSyncAction(false, { mode: "new_uploads" })).toBe("create");
+    expect(getSyncAction(true, { mode: "new_uploads" })).toBe("skip_existing");
+  });
+
+  it("only snapshots existing videos in refresh-stats mode", () => {
+    expect(getSyncAction(false, { mode: "refresh_stats" })).toBe("skip_missing");
+    expect(getSyncAction(true, { mode: "refresh_stats" })).toBe("snapshot_only");
   });
 });

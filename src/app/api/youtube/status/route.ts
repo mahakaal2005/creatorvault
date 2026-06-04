@@ -28,15 +28,28 @@ export async function GET() {
       configured: false,
       connected: false,
       account: null,
+      last_synced_at: null,
     });
   }
 
   try {
-    const account = await getYouTubeAccount(createAdminClient(), user.id);
+    const admin = createAdminClient();
+    const account = await getYouTubeAccount(admin, user.id);
+    const { data: latestSync } = await admin
+      .from("content_items")
+      .select("last_synced_at")
+      .eq("user_id", user.id)
+      .eq("platform", "youtube")
+      .eq("source", "youtube_sync")
+      .not("last_synced_at", "is", null)
+      .order("last_synced_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
     return NextResponse.json({
       configured: true,
       connected: Boolean(account),
+      last_synced_at: latestSync?.last_synced_at ?? null,
       account: account
         ? {
             id: account.id,

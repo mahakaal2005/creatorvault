@@ -10,6 +10,7 @@ type SnapshotInsert =
   Database["public"]["Tables"]["stat_snapshots"]["Insert"];
 
 export type YouTubeSyncFilters = {
+  mode?: "sync_all" | "new_uploads" | "refresh_stats";
   content_type?: "youtube_video" | "youtube_short";
   published_from?: string;
   published_to?: string;
@@ -23,8 +24,16 @@ export type YouTubeSyncSummary = {
   created: number;
   updated: number;
   skipped_existing: number;
+  skipped_missing: number;
   snapshots: number;
 };
+
+type SyncAction =
+  | "create"
+  | "update"
+  | "snapshot_only"
+  | "skip_existing"
+  | "skip_missing";
 
 function datePart(value: string | null) {
   return value?.slice(0, 10) ?? null;
@@ -55,6 +64,27 @@ export function filterImportedVideos(
   return typeof filters.max_results === "number"
     ? filtered.slice(0, filters.max_results)
     : filtered;
+}
+
+export function getSyncAction(
+  exists: boolean,
+  filters: Pick<YouTubeSyncFilters, "mode" | "include_existing">,
+): SyncAction {
+  const mode = filters.mode ?? "sync_all";
+
+  if (mode === "new_uploads") {
+    return exists ? "skip_existing" : "create";
+  }
+
+  if (mode === "refresh_stats") {
+    return exists ? "snapshot_only" : "skip_missing";
+  }
+
+  if (exists && filters.include_existing === false) {
+    return "skip_existing";
+  }
+
+  return exists ? "update" : "create";
 }
 
 export function buildContentPayload({
@@ -160,14 +190,22 @@ export async function saveImportedVideos({
     created: 0,
     updated: 0,
     skipped_existing: 0,
+    skipped_missing: 0,
     snapshots: 0,
   };
 
   for (const video of filteredVideos) {
     const existing = await findExistingContent(supabase, userId, video.externalId);
 
-    if (existing && filters.include_existing === false) {
+    const action = getSyncAction(Boolean(existing), filters);
+
+    if (action === "skip_existing") {
       summary.skipped_existing += 1;
+      continue;
+    }
+
+    if (action === "skip_missing") {
+      summary.skipped_missing += 1;
       continue;
     }
 
@@ -179,6 +217,21 @@ export async function saveImportedVideos({
     });
 
     const contentId = existing?.id;
+
+    if (action === "snapshot_only" && contentId) {
+      await upsertSnapshot(
+        supabase,
+        buildSnapshotPayload({
+          contentItemId: contentId,
+          video,
+          snapshotDate,
+        }),
+      );
+      summary.updated += 1;
+      summary.snapshots += 1;
+      summary.imported += 1;
+      continue;
+    }
 
     if (contentId) {
       const { error } = await supabase

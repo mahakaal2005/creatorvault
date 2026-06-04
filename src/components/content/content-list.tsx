@@ -83,6 +83,11 @@ export function ContentList({ items, total }: ContentListProps) {
                   <span className="rounded-md border px-2 py-1 capitalize">
                     {item.status}
                   </span>
+                  {item.source === "youtube_sync" ? (
+                    <span className="rounded-md border border-primary/30 bg-primary/10 px-2 py-1 text-foreground">
+                      YouTube sync
+                    </span>
+                  ) : null}
                   <span className="rounded-md border px-2 py-1">
                     {formatDate(item.published_at)}
                   </span>

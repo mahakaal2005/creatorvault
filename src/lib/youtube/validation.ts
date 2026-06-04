@@ -16,6 +16,12 @@ const dateStringSchema = z.preprocess(
 );
 
 export const youtubeSyncSchema = z.object({
+  mode: z
+    .preprocess(
+      blankToUndefined,
+      z.enum(["sync_all", "new_uploads", "refresh_stats"]).optional(),
+    )
+    .default("sync_all"),
   content_type: z
     .preprocess(blankToUndefined, z.enum(["youtube_video", "youtube_short"]).optional()),
   published_from: dateStringSchema,
@@ -35,4 +41,6 @@ export const youtubeImportedDeleteSchema = youtubeSyncSchema.pick({
   content_type: true,
   published_from: true,
   published_to: true,
+}).extend({
+  confirmation: z.literal("DELETE IMPORTED"),
 });
