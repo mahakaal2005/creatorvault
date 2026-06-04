@@ -24,3 +24,7 @@
 - Verified the production app redirects signed-out dashboard traffic to login.
 - Added Phase 10 production handoff notes.
 - Reclassified Supabase leaked password protection as a paid-plan hardening follow-up accepted for the free-plan MVP.
+- Added Phase 11 YouTube sync design and implementation plan.
+- Added YouTube OAuth connection routes, read-only sync routes, imported-content cleanup, source filtering, and secure server-side token handling.
+- Applied the `youtube_sync_import_tracking` Supabase migration.
+- Applied the `youtube_sync_advisor_cleanup` Supabase migration for explicit platform account deny policies and source account indexing.

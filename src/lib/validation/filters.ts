@@ -32,6 +32,7 @@ const dateStringSchema = z.preprocess(
 );
 
 const platformSchema = z.enum(["youtube", "instagram"]);
+const contentSourceSchema = z.enum(["manual", "youtube_sync"]);
 const contentTypeSchema = z.enum([
   "youtube_video",
   "youtube_short",
@@ -56,6 +57,7 @@ export const contentFilterSchema = z
     content_type: z.preprocess(blankToUndefined, contentTypeSchema.optional()),
     topic: z.preprocess(blankToUndefined, z.string().optional()),
     tag: z.preprocess(blankToUndefined, z.string().optional()),
+    source: z.preprocess(blankToUndefined, contentSourceSchema.optional()),
     status: z
       .preprocess(blankToUndefined, z.enum(["active", "archived", "all"]).optional())
       .default("active"),

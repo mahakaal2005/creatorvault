@@ -67,6 +67,10 @@ function filterContentItems(items: ContentWithTags[], filters: ContentFilters) {
       return false;
     }
 
+    if (filters.source && item.source !== filters.source) {
+      return false;
+    }
+
     if (
       filters.topic &&
       item.topic?.toLowerCase() !== filters.topic.toLowerCase()
@@ -386,4 +390,40 @@ export async function deleteContentItem(supabase: Supabase, id: string) {
   if (error) {
     throw error;
   }
+}
+
+export async function deleteImportedYouTubeContent(
+  supabase: Supabase,
+  userId: string,
+  filters: Pick<
+    ContentFilters,
+    "content_type" | "published_from" | "published_to"
+  >,
+) {
+  let query = supabase
+    .from("content_items")
+    .delete({ count: "exact" })
+    .eq("user_id", userId)
+    .eq("platform", "youtube")
+    .eq("source", "youtube_sync");
+
+  if (filters.content_type) {
+    query = query.eq("content_type", filters.content_type);
+  }
+
+  if (filters.published_from) {
+    query = query.gte("published_at", `${filters.published_from}T00:00:00.000Z`);
+  }
+
+  if (filters.published_to) {
+    query = query.lte("published_at", `${filters.published_to}T23:59:59.999Z`);
+  }
+
+  const { error, count } = await query.select("id");
+
+  if (error) {
+    throw error;
+  }
+
+  return count ?? 0;
 }

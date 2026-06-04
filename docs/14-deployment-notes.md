@@ -6,7 +6,6 @@ CreatorVault is deployed to Vercel and connected to the hosted Supabase producti
 
 - GitHub repository: `https://github.com/mahakaal2005/creatorvault`
 - Production URL: `https://creatorvault-eight.vercel.app`
-- Latest deployed commit: `4d165ad`
 - Production behavior verified: signed-out `/dashboard` redirects to `/login?next=%2Fdashboard`.
 
 ## Supabase Production Backend
@@ -18,6 +17,8 @@ CreatorVault is deployed to Vercel and connected to the hosted Supabase producti
 - Applied migrations:
   - `initial_schema`
   - `harden_rls_and_functions`
+  - `youtube_sync_import_tracking`
+  - `youtube_sync_advisor_cleanup`
 
 ## Required Vercel Environment Variables
 
@@ -26,9 +27,25 @@ Set these in Vercel Project Settings > Environment Variables for Production, Pre
 ```text
 NEXT_PUBLIC_SUPABASE_URL=https://lcfczbtdibwtzgirorls.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<Supabase publishable key>
+SUPABASE_SECRET_KEY=<Supabase service role key, server-only>
+GOOGLE_CLIENT_ID=<Google OAuth client ID>
+GOOGLE_CLIENT_SECRET=<Google OAuth client secret>
+YOUTUBE_SYNC_TOKEN_SECRET=<random 32+ character token encryption secret>
 ```
 
-Do not add `SUPABASE_SERVICE_ROLE_KEY` unless a future server-only admin workflow requires it. The current MVP does not need it.
+`SUPABASE_SECRET_KEY`, `GOOGLE_CLIENT_SECRET`, and `YOUTUBE_SYNC_TOKEN_SECRET` are server-only secrets. Never prefix them with `NEXT_PUBLIC_`.
+
+YouTube sync uses the Supabase server secret only inside authenticated API routes so OAuth token rows can stay hidden from browser-side Supabase access.
+
+## Google Cloud OAuth Settings
+
+Create a Google Cloud OAuth client for the YouTube sync phase:
+
+- Enable YouTube Data API v3.
+- OAuth client type: Web application.
+- Authorized redirect URI: `https://creatorvault-eight.vercel.app/api/youtube/callback`.
+- Local development redirect URI: `http://localhost:3000/api/youtube/callback`.
+- Scope requested by the app: `https://www.googleapis.com/auth/youtube.readonly`.
 
 ## Supabase Auth Settings Before Launch
 
@@ -82,9 +99,13 @@ After deployment:
 - Confirm archived content disappears from default dashboard totals.
 - Confirm `/api/content` returns `401` when signed out.
 - Confirm `/api/dashboard/summary` returns `401` when signed out.
+- Connect YouTube from `/settings`.
+- Run a default YouTube sync and confirm videos/Shorts appear in `/content`.
+- Filter `/content` by Source = YouTube sync.
+- Delete imported YouTube content with a narrow filter and confirm manual content remains.
 
 ## Known Deployment Follow-Ups
 
 - Leaked password protection remains disabled because it is only available on a paid Supabase plan for this project. Revisit before storing higher-risk personal data or sharing the app more broadly.
 - The existing moderate Next/PostCSS advisory remains until a non-breaking upstream fix is available.
-- Add YouTube OAuth sync as a later phase, not part of MVP deployment.
+- Add scheduled YouTube background refresh later if manual sync proves useful.

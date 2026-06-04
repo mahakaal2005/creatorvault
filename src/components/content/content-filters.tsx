@@ -81,6 +81,19 @@ export function ContentFilters({ filters, error }: ContentFiltersProps) {
           </label>
 
           <label className="space-y-1.5">
+            <span className={labelClassName}>Source</span>
+            <select
+              className={inputClassName}
+              name="source"
+              defaultValue={filters.source ?? ""}
+            >
+              <option value="">All sources</option>
+              <option value="manual">Manual</option>
+              <option value="youtube_sync">YouTube sync</option>
+            </select>
+          </label>
+
+          <label className="space-y-1.5">
             <span className={labelClassName}>Status</span>
             <select
               className={inputClassName}

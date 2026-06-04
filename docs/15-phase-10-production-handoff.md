@@ -22,7 +22,7 @@ Phase 10 prepares CreatorVault for real personal use after deployment. It does n
 
 - Leaked password protection is not enabled because it is a paid-plan Supabase Auth feature for this project.
 - Instagram API sync is intentionally not part of MVP.
-- YouTube API sync is intentionally a later enhancement.
+- YouTube sync is now a Phase 11 enhancement with manual connect and sync controls.
 - Users still add content URLs manually in MVP.
 - Manual stats snapshots remain the source of truth for MVP analytics.
 
@@ -56,18 +56,18 @@ Recommended dashboard settings:
 - Run `npm run check` before every commit.
 - Run `npm run build` before every production deployment.
 - Keep `.env.local` out of git.
-- Do not add service-role keys unless a future server-only admin workflow requires them.
+- Keep `SUPABASE_SECRET_KEY` server-only; it is required for YouTube OAuth token storage.
 - Keep Row Level Security enabled on all public tables.
 - Add schema changes through migrations and document them in the changelog.
 - After deployment, verify signed-out app routes still redirect to login.
 
 ## Recommended Next Product Phase
 
-The next product phase should be a carefully scoped V1 planning phase for optional account-based import:
+The next product phase should validate YouTube sync with a real account, then decide whether background refresh is worth adding:
 
-- YouTube OAuth connection.
-- Read-only YouTube channel content import.
-- Manual review before saving imported videos.
-- Refresh latest YouTube stats on demand.
+- Run a full default sync.
+- Check imported titles, thumbnails, and Short detection.
+- Confirm stats snapshots are useful.
+- Decide whether manual sync is enough or scheduled refresh is needed.
 
 Instagram auto-import should remain out of scope until API access and permissions are confirmed.

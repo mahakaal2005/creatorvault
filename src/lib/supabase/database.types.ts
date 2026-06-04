@@ -34,6 +34,9 @@ export type Database = {
           cta_keyword: string | null;
           notes: string | null;
           status: Database["public"]["Enums"]["content_status"];
+          source: Database["public"]["Enums"]["content_source"];
+          source_account_id: string | null;
+          last_synced_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -53,6 +56,9 @@ export type Database = {
           cta_keyword?: string | null;
           notes?: string | null;
           status?: Database["public"]["Enums"]["content_status"];
+          source?: Database["public"]["Enums"]["content_source"];
+          source_account_id?: string | null;
+          last_synced_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -182,6 +188,7 @@ export type Database = {
       platform: "youtube" | "instagram";
       content_type: "youtube_video" | "youtube_short" | "instagram_reel";
       content_status: "active" | "archived";
+      content_source: "manual" | "youtube_sync";
       hook_type:
         | "curiosity"
         | "problem_solution"

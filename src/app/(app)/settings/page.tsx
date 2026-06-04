@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { YouTubeSyncPanel } from "@/components/youtube/youtube-sync-panel";
 import { signOut } from "@/lib/auth/actions";
 import { getAuthenticatedUser } from "@/lib/auth/session";
 
@@ -6,7 +7,7 @@ export default async function SettingsPage() {
   const user = await getAuthenticatedUser();
 
   return (
-    <div className="max-w-2xl space-y-6 pb-16 sm:pb-0">
+    <div className="max-w-3xl space-y-6 pb-16 sm:pb-0">
       <div>
         <h1 className="text-2xl font-semibold tracking-normal">Settings</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -25,6 +26,8 @@ export default async function SettingsPage() {
           </Button>
         </form>
       </section>
+
+      <YouTubeSyncPanel />
     </div>
   );
 }

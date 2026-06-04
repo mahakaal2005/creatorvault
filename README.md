@@ -9,6 +9,10 @@ Create a local environment file:
 ```text
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+SUPABASE_SECRET_KEY=your_server_only_supabase_secret
+GOOGLE_CLIENT_ID=your_google_oauth_client_id
+GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
+YOUTUBE_SYNC_TOKEN_SECRET=random_32_character_minimum_secret
 ```
 
 Install dependencies and run the development server:
@@ -40,6 +44,18 @@ Production Supabase Auth settings should include:
 - Local redirect URL: `http://localhost:3000/**`
 
 Leaked password protection is accepted as disabled for the free-plan MVP because it is a paid-plan Supabase Auth hardening feature for this project.
+
+YouTube sync requires a Google Cloud OAuth web client with YouTube Data API v3 enabled. Add this redirect URI in Google Cloud:
+
+```text
+https://creatorvault-eight.vercel.app/api/youtube/callback
+```
+
+For local development, also add:
+
+```text
+http://localhost:3000/api/youtube/callback
+```
 
 ## Documentation
 
