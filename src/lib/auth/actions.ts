@@ -120,6 +120,40 @@ export async function signUpWithPassword(
   redirect("/login?check_email=1");
 }
 
+export async function resendConfirmationEmail(
+  _previousState: AuthFormState,
+  formData: FormData,
+): Promise<AuthFormState> {
+  const email = getString(formData, "email");
+
+  if (!email) {
+    return { error: "Email is required." };
+  }
+
+  try {
+    const supabase = await createClient();
+    const origin = await getRequestOrigin();
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: {
+        emailRedirectTo: `${origin}/login?verified=1`,
+      },
+    });
+
+    if (error) {
+      return { error: error.message };
+    }
+  } catch {
+    return {
+      error:
+        "Supabase is not configured yet. Add your project URL and publishable key to .env.local.",
+    };
+  }
+
+  redirect("/login?check_email=1");
+}
+
 export async function signOut() {
   try {
     const supabase = await createClient();

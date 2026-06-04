@@ -5,6 +5,7 @@ import { useFormStatus } from "react-dom";
 import { LogIn, UserPlus } from "lucide-react";
 
 import {
+  resendConfirmationEmail,
   type AuthFormState,
   signInWithPassword,
   signUpWithPassword,
@@ -49,6 +50,10 @@ export function LoginForm({
     signUpWithPassword,
     initialState,
   );
+  const [resendState, resendAction] = useActionState(
+    resendConfirmationEmail,
+    initialState,
+  );
 
   return (
     <div className="mt-6 space-y-5">
@@ -70,6 +75,32 @@ export function LoginForm({
           <AuthFields idPrefix="signup" />
           {signUpState.error ? <AuthError message={signUpState.error} /> : null}
           <SubmitButton action="signup" label="Create private account" />
+        </form>
+      </div>
+
+      <div className="border-t pt-5">
+        <form action={resendAction} className="space-y-4">
+          <div>
+            <label className="text-sm font-medium" htmlFor="resend-email">
+              Resend confirmation email
+            </label>
+            <input
+              id="resend-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              className="mt-2 h-9 w-full rounded-md border bg-background px-3 text-sm outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/20"
+              placeholder="you@example.com"
+            />
+          </div>
+          {resendState.error ? <AuthError message={resendState.error} /> : null}
+          <button
+            className="inline-flex h-9 items-center justify-center gap-2 rounded-md border px-3 text-sm font-medium transition-colors hover:bg-muted disabled:pointer-events-none disabled:opacity-60"
+            type="submit"
+          >
+            Resend email
+          </button>
         </form>
       </div>
     </div>
