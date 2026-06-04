@@ -6,7 +6,12 @@ import { getAuthenticatedUser } from "@/lib/auth/session";
 
 type LoginPageProps = {
   searchParams: Promise<{
+    check_email?: string;
+    error?: string;
+    error_code?: string;
+    error_description?: string;
     next?: string;
+    verified?: string;
   }>;
 };
 
@@ -22,6 +27,16 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const user = await getAuthenticatedUser();
   const params = await searchParams;
   const nextPath = getSafeNextPath(params.next);
+  const statusMessage =
+    params.check_email === "1"
+      ? "Check your email and open the confirmation link before signing in."
+      : params.verified === "1"
+        ? "Email verified. You can sign in now."
+        : params.error_code === "otp_expired"
+          ? "That email confirmation link expired. Create the account again to receive a fresh link."
+          : params.error_description
+            ? params.error_description.replaceAll("+", " ")
+            : undefined;
 
   if (user) {
     redirect(nextPath);
@@ -44,7 +59,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </div>
         </div>
 
-        <LoginForm nextPath={nextPath} />
+        <LoginForm nextPath={nextPath} statusMessage={statusMessage} />
       </section>
     </main>
   );

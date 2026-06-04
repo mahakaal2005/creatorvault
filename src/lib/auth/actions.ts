@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
@@ -30,6 +31,21 @@ function validateCredentials(email: string, password: string) {
   }
 
   return null;
+}
+
+async function getRequestOrigin() {
+  const headerStore = await headers();
+  const forwardedHost = headerStore.get("x-forwarded-host");
+  const host = forwardedHost ?? headerStore.get("host");
+  const forwardedProto = headerStore.get("x-forwarded-proto");
+  const protocol =
+    forwardedProto ?? (host?.startsWith("localhost") ? "http" : "https");
+
+  if (!host) {
+    return "https://creatorvault-eight.vercel.app";
+  }
+
+  return `${protocol}://${host}`;
 }
 
 export async function signInWithPassword(
@@ -79,10 +95,12 @@ export async function signUpWithPassword(
 
   try {
     const supabase = await createClient();
+    const origin = await getRequestOrigin();
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        emailRedirectTo: `${origin}/login?verified=1`,
         data: {
           display_name: email.split("@")[0],
         },
@@ -99,7 +117,7 @@ export async function signUpWithPassword(
     };
   }
 
-  redirect("/dashboard");
+  redirect("/login?check_email=1");
 }
 
 export async function signOut() {

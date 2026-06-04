@@ -34,7 +34,13 @@ function SubmitButton({
   );
 }
 
-export function LoginForm({ nextPath }: { nextPath: string }) {
+export function LoginForm({
+  nextPath,
+  statusMessage,
+}: {
+  nextPath: string;
+  statusMessage?: string;
+}) {
   const [signInState, signInAction] = useActionState(
     signInWithPassword,
     initialState,
@@ -46,6 +52,12 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
 
   return (
     <div className="mt-6 space-y-5">
+      {statusMessage ? (
+        <p className="rounded-md border border-primary/25 bg-primary/10 px-3 py-2 text-sm text-foreground">
+          {statusMessage}
+        </p>
+      ) : null}
+
       <form action={signInAction} className="space-y-4">
         <input name="next" type="hidden" value={nextPath} />
         <AuthFields idPrefix="signin" />
