@@ -5,6 +5,7 @@ import {
   Library,
   Medal,
   Tags,
+  Timer,
   TrendingUp,
 } from "lucide-react";
 
@@ -48,6 +49,21 @@ function formatDate(value: string | null) {
   }).format(new Date(value));
 }
 
+function formatDurationSeconds(value: number | null | undefined) {
+  if (value === null || value === undefined) {
+    return "-";
+  }
+
+  const minutes = Math.floor(value / 60);
+  const seconds = Math.round(value % 60);
+
+  if (minutes === 0) {
+    return `${seconds}s`;
+  }
+
+  return `${minutes}m ${seconds}s`;
+}
+
 function contentTypeLabel(type: DashboardContentSummary["content_type"]) {
   if (type === "youtube_video") {
     return "YouTube video";
@@ -87,7 +103,7 @@ export function DashboardSummaryView({ summary }: DashboardSummaryProps) {
 
   return (
     <>
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
         <SummaryCard
           icon={<Library className="size-4" aria-hidden="true" />}
           label="Total content"
@@ -99,6 +115,25 @@ export function DashboardSummaryView({ summary }: DashboardSummaryProps) {
           label="Total views"
           value={formatNumber(summary.cards.total_views)}
           detail="Latest snapshot total"
+        />
+        <SummaryCard
+          icon={<Timer className="size-4" aria-hidden="true" />}
+          label="Watch time"
+          value={formatNumber(summary.cards.total_watch_time_minutes)}
+          detail="Latest YouTube Analytics"
+        />
+        <SummaryCard
+          icon={<Medal className="size-4" aria-hidden="true" />}
+          label="Best retention"
+          value={
+            summary.cards.best_retention_content
+              ? formatDurationSeconds(
+                  summary.cards.best_retention_content
+                    .average_view_duration_seconds,
+                )
+              : "None"
+          }
+          detail={summary.cards.best_retention_content?.title ?? "No analytics yet"}
         />
         <SummaryCard
           icon={<Medal className="size-4" aria-hidden="true" />}

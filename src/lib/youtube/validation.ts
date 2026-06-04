@@ -19,7 +19,9 @@ export const youtubeSyncSchema = z.object({
   mode: z
     .preprocess(
       blankToUndefined,
-      z.enum(["sync_all", "new_uploads", "refresh_stats"]).optional(),
+      z
+        .enum(["sync_all", "new_uploads", "refresh_stats", "refresh_analytics"])
+        .optional(),
     )
     .default("sync_all"),
   content_type: z

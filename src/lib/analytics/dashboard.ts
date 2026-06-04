@@ -22,12 +22,16 @@ export type DashboardContentSummary = {
   created_at: string;
   latest_views: number | null;
   engagement_rate: number | null;
+  average_view_duration_seconds: number | null;
+  watch_time_minutes: number | null;
 };
 
 export type DashboardSummary = {
   cards: {
     total_content: number;
     total_views: number;
+    total_watch_time_minutes: number;
+    best_retention_content: DashboardContentSummary | null;
     best_platform: DashboardGroupSummary | null;
     best_topic: DashboardGroupSummary | null;
   };
@@ -52,6 +56,14 @@ function engagementCount(item: ContentWithTags) {
 
 function latestViews(item: ContentWithTags) {
   return item.latest_snapshot?.views ?? null;
+}
+
+function latestWatchTime(item: ContentWithTags) {
+  return item.latest_snapshot?.watch_time_minutes ?? null;
+}
+
+function latestAverageViewDuration(item: ContentWithTags) {
+  return item.latest_snapshot?.average_view_duration_seconds ?? null;
 }
 
 function engagementRate(item: ContentWithTags) {
@@ -86,6 +98,8 @@ function toContentSummary(item: ContentWithTags): DashboardContentSummary {
     created_at: item.created_at,
     latest_views: latestViews(item),
     engagement_rate: engagementRate(item),
+    average_view_duration_seconds: latestAverageViewDuration(item),
+    watch_time_minutes: latestWatchTime(item),
   };
 }
 
@@ -161,6 +175,19 @@ export function buildDashboardSummary(items: ContentWithTags[]): DashboardSummar
     (total, item) => total + valueOrZero(latestViews(item)),
     0,
   );
+  const totalWatchTime = activeItems.reduce(
+    (total, item) => total + valueOrZero(latestWatchTime(item)),
+    0,
+  );
+  const bestRetentionContent =
+    [...activeItems]
+      .filter((item) => latestAverageViewDuration(item) !== null)
+      .sort(
+        (first, second) =>
+          valueOrZero(latestAverageViewDuration(second)) -
+          valueOrZero(latestAverageViewDuration(first)),
+      )
+      .map(toContentSummary)[0] ?? null;
   const rankedContent = [...activeItems]
     .sort((first, second) => {
       const viewDelta =
@@ -192,6 +219,8 @@ export function buildDashboardSummary(items: ContentWithTags[]): DashboardSummar
     cards: {
       total_content: activeItems.length,
       total_views: totalViews,
+      total_watch_time_minutes: totalWatchTime,
+      best_retention_content: bestRetentionContent,
       best_platform: bestGroup(activeItems, (item) =>
         platformLabel(item.platform),
       ),

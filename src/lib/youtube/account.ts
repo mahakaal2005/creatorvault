@@ -6,7 +6,7 @@ import {
   encryptOAuthToken,
   refreshAccessToken,
   tokenExpiry,
-  YOUTUBE_SCOPE,
+  YOUTUBE_SCOPES,
 } from "@/lib/youtube/oauth";
 
 type Supabase = SupabaseClient<Database>;
@@ -36,6 +36,7 @@ export async function saveYouTubeAccount({
   accessToken,
   refreshToken,
   expiresIn,
+  scopes,
 }: {
   supabase: Supabase;
   userId: string;
@@ -44,6 +45,7 @@ export async function saveYouTubeAccount({
   accessToken: string;
   refreshToken?: string;
   expiresIn?: number;
+  scopes?: string[];
 }) {
   const existing = await getYouTubeAccount(supabase, userId);
   const encryptedRefreshToken = refreshToken
@@ -55,7 +57,7 @@ export async function saveYouTubeAccount({
     provider: "youtube" as const,
     provider_account_id: providerAccountId,
     account_name: accountName,
-    scopes: [YOUTUBE_SCOPE],
+    scopes: scopes ?? [...YOUTUBE_SCOPES],
     access_token_encrypted: encryptOAuthToken(accessToken),
     refresh_token_encrypted: encryptedRefreshToken,
     token_expires_at: tokenExpiry(expiresIn),

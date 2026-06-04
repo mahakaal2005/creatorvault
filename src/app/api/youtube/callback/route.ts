@@ -4,7 +4,7 @@ import { requireApiUser } from "@/lib/api/auth";
 import { createAdminClient } from "@/lib/supabase/server";
 import { getOwnYouTubeChannel } from "@/lib/youtube/api";
 import { saveYouTubeAccount } from "@/lib/youtube/account";
-import { exchangeCodeForTokens } from "@/lib/youtube/oauth";
+import { exchangeCodeForTokens, parseScopeString } from "@/lib/youtube/oauth";
 
 const STATE_COOKIE = "creatorvault_youtube_oauth_state";
 
@@ -45,6 +45,7 @@ export async function GET(request: NextRequest) {
       accessToken: tokens.access_token,
       refreshToken: tokens.refresh_token,
       expiresIn: tokens.expires_in,
+      scopes: parseScopeString(tokens.scope),
     });
 
     const redirect = settingsRedirect(request, "connected");

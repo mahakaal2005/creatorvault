@@ -32,3 +32,11 @@
 ## 2026-06-04 Phase 13
 
 - Added YouTube sync polish with sync modes, last synced status, imported-content badges, richer summaries, and typed bulk-delete confirmation.
+
+## 2026-06-04 Phase 14
+
+- Added manual YouTube Analytics refresh for imported YouTube videos and Shorts.
+- Added the read-only YouTube Analytics OAuth scope and reconnect detection for older YouTube connections.
+- Stored watch time, average view duration, shares, and subscribers gained in existing stats snapshots.
+- Added dashboard watch time and best retention summary cards.
+- Documented the Phase 14 reconnect flow and Google Cloud YouTube Analytics API requirement.

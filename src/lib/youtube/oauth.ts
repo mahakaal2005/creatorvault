@@ -1,6 +1,9 @@
 import { decryptToken, encryptToken } from "./crypto";
 
-const YOUTUBE_SCOPE = "https://www.googleapis.com/auth/youtube.readonly";
+const YOUTUBE_DATA_SCOPE = "https://www.googleapis.com/auth/youtube.readonly";
+const YOUTUBE_ANALYTICS_SCOPE =
+  "https://www.googleapis.com/auth/yt-analytics.readonly";
+const YOUTUBE_SCOPES = [YOUTUBE_DATA_SCOPE, YOUTUBE_ANALYTICS_SCOPE] as const;
 const AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
 
@@ -49,7 +52,7 @@ export function buildAuthorizationUrl({
   url.searchParams.set("client_id", env.clientId);
   url.searchParams.set("redirect_uri", youtubeRedirectUri(origin));
   url.searchParams.set("response_type", "code");
-  url.searchParams.set("scope", YOUTUBE_SCOPE);
+  url.searchParams.set("scope", YOUTUBE_SCOPES.join(" "));
   url.searchParams.set("access_type", "offline");
   url.searchParams.set("include_granted_scopes", "true");
   url.searchParams.set("prompt", "consent");
@@ -130,4 +133,19 @@ export function tokenExpiry(expiresInSeconds: number | undefined, now = new Date
   return new Date(now.getTime() + expiresInSeconds * 1000).toISOString();
 }
 
-export { YOUTUBE_SCOPE };
+export function parseScopeString(scope: string | undefined) {
+  return scope?.split(/\s+/).filter(Boolean) ?? [...YOUTUBE_SCOPES];
+}
+
+export function hasRequiredYouTubeScopes(scopes: string[] | null | undefined) {
+  const scopeSet = new Set(scopes ?? []);
+
+  return YOUTUBE_SCOPES.every((scope) => scopeSet.has(scope));
+}
+
+export {
+  YOUTUBE_ANALYTICS_SCOPE,
+  YOUTUBE_DATA_SCOPE,
+  YOUTUBE_DATA_SCOPE as YOUTUBE_SCOPE,
+  YOUTUBE_SCOPES,
+};

@@ -8,6 +8,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 type StatusResponse = {
   configured: boolean;
   connected: boolean;
+  needs_reconnect?: boolean;
   last_synced_at: string | null;
   account: {
     name: string | null;
@@ -24,6 +25,7 @@ type SyncSummary = {
   skipped_existing: number;
   skipped_missing: number;
   snapshots: number;
+  analytics?: number;
 };
 
 const inputClassName =
@@ -181,11 +183,18 @@ export function YouTubeSyncPanel() {
             {status && !status.configured
               ? "YouTube sync needs production secrets before it can be connected."
               : status?.connected
-                ? `Connected to ${status.account?.name ?? "YouTube"}. Last synced: ${formatDateTime(status.last_synced_at)}.`
+                ? status.needs_reconnect
+                  ? `Connected to ${status.account?.name ?? "YouTube"}. Reconnect once to unlock YouTube Analytics.`
+                  : `Connected to ${status.account?.name ?? "YouTube"}. Last synced: ${formatDateTime(status.last_synced_at)}.`
                 : "Connect a YouTube account to import uploaded videos and Shorts."}
           </p>
         </div>
-        {status?.connected ? (
+        {status?.connected && status.needs_reconnect ? (
+          <a href="/api/youtube/connect" className={buttonVariants()}>
+            <Video className="size-4" aria-hidden="true" />
+            Reconnect
+          </a>
+        ) : status?.connected ? (
           <Button
             type="button"
             variant="outline"
@@ -220,6 +229,7 @@ export function YouTubeSyncPanel() {
                   <option value="sync_all">Sync all</option>
                   <option value="new_uploads">Only new uploads</option>
                   <option value="refresh_stats">Refresh stats only</option>
+                  <option value="refresh_analytics">Refresh analytics</option>
                 </select>
               </label>
 
@@ -267,6 +277,9 @@ export function YouTubeSyncPanel() {
               <span>Updated: {syncSummary.updated}</span>
               <span>Imported: {syncSummary.imported}</span>
               <span>Snapshots: {syncSummary.snapshots}</span>
+              {typeof syncSummary.analytics === "number" ? (
+                <span>Analytics: {syncSummary.analytics}</span>
+              ) : null}
               <span>Skipped existing: {syncSummary.skipped_existing}</span>
               <span>Skipped missing: {syncSummary.skipped_missing}</span>
             </div>

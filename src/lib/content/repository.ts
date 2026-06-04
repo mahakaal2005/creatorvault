@@ -14,7 +14,15 @@ export type ContentItem = Database["public"]["Tables"]["content_items"]["Row"];
 export type LatestSnapshot = Pick<
   Database["public"]["Tables"]["stat_snapshots"]["Row"],
   "snapshot_date" | "views" | "likes" | "comments" | "shares" | "saves"
->;
+> &
+  Partial<
+    Pick<
+      Database["public"]["Tables"]["stat_snapshots"]["Row"],
+      | "followers_or_subscribers_gained"
+      | "average_view_duration_seconds"
+      | "watch_time_minutes"
+    >
+  >;
 
 export type ContentWithTags = ContentItem & {
   tags: string[];
@@ -182,7 +190,9 @@ async function getLatestSnapshotsByContentId(
 
   const { data, error } = await supabase
     .from("stat_snapshots")
-    .select("content_item_id, snapshot_date, views, likes, comments, shares, saves")
+    .select(
+      "content_item_id, snapshot_date, views, likes, comments, shares, saves, followers_or_subscribers_gained, average_view_duration_seconds, watch_time_minutes",
+    )
     .in("content_item_id", contentItemIds)
     .order("snapshot_date", { ascending: false });
 
@@ -201,6 +211,10 @@ async function getLatestSnapshotsByContentId(
         comments: snapshot.comments,
         shares: snapshot.shares,
         saves: snapshot.saves,
+        followers_or_subscribers_gained:
+          snapshot.followers_or_subscribers_gained,
+        average_view_duration_seconds: snapshot.average_view_duration_seconds,
+        watch_time_minutes: snapshot.watch_time_minutes,
       });
     }
   });

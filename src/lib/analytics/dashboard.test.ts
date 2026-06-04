@@ -84,6 +84,46 @@ describe("dashboard analytics", () => {
     expect(summary.cards.best_topic?.label).toBe("Study");
   });
 
+  it("summarizes YouTube Analytics watch time and retention from latest snapshots", () => {
+    const summary = buildDashboardSummary([
+      item({
+        id: "a",
+        title: "Deep tutorial",
+        latest_snapshot: {
+          snapshot_date: "2026-06-04",
+          views: 1000,
+          likes: 80,
+          comments: 10,
+          shares: 4,
+          saves: 0,
+          watch_time_minutes: 500,
+          average_view_duration_seconds: 44,
+        },
+      }),
+      item({
+        id: "b",
+        title: "Quick Short",
+        latest_snapshot: {
+          snapshot_date: "2026-06-04",
+          views: 800,
+          likes: 80,
+          comments: 8,
+          shares: 3,
+          saves: 0,
+          watch_time_minutes: 120,
+          average_view_duration_seconds: 18,
+        },
+      }),
+    ]);
+
+    expect(summary.cards.total_watch_time_minutes).toBe(620);
+    expect(summary.cards.best_retention_content).toMatchObject({
+      id: "a",
+      title: "Deep tutorial",
+      average_view_duration_seconds: 44,
+    });
+  });
+
   it("ranks top content by latest views then engagement rate", () => {
     const summary = buildDashboardSummary([
       item({

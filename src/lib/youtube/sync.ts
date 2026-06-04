@@ -10,7 +10,7 @@ type SnapshotInsert =
   Database["public"]["Tables"]["stat_snapshots"]["Insert"];
 
 export type YouTubeSyncFilters = {
-  mode?: "sync_all" | "new_uploads" | "refresh_stats";
+  mode?: "sync_all" | "new_uploads" | "refresh_stats" | "refresh_analytics";
   content_type?: "youtube_video" | "youtube_short";
   published_from?: string;
   published_to?: string;

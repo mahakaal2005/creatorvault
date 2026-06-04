@@ -20,6 +20,9 @@ describe("youtubeSyncSchema", () => {
     expect(youtubeSyncSchema.parse({ mode: "refresh_stats" }).mode).toBe(
       "refresh_stats",
     );
+    expect(youtubeSyncSchema.parse({ mode: "refresh_analytics" }).mode).toBe(
+      "refresh_analytics",
+    );
   });
 });
 

@@ -4,6 +4,7 @@ import { requireApiUser } from "@/lib/api/auth";
 import { apiError } from "@/lib/api/responses";
 import { createAdminClient } from "@/lib/supabase/server";
 import { getYouTubeAccount } from "@/lib/youtube/account";
+import { hasRequiredYouTubeScopes } from "@/lib/youtube/oauth";
 
 function isConfigured() {
   return Boolean(
@@ -49,6 +50,7 @@ export async function GET() {
     return NextResponse.json({
       configured: true,
       connected: Boolean(account),
+      needs_reconnect: account ? !hasRequiredYouTubeScopes(account.scopes) : false,
       last_synced_at: latestSync?.last_synced_at ?? null,
       account: account
         ? {
